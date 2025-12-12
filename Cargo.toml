@@ -7,7 +7,7 @@ description = "Rust API wrapper for Beeper Desktop API"
 repository = "https://github.com/ErdemGKSL/beeper-desktop-api"
 authors = ["Erdem Göksel"]
 keywords = ["beeper", "messaging", "chat", "api-wrapper", "async"]
-categories = ["api-bindings", "async", "authentication"]
+categories = ["api-bindings", "authentication"]
 readme = "README.md"
 
 [lib]
