@@ -18,6 +18,10 @@ path = "src/lib.rs"
 name = "fetch_chats"
 path = "examples/fetch_chats.rs"
 
+[[example]]
+name = "send_message"
+path = "examples/send_message.rs"
+
 [dependencies]
 reqwest = { version = "0.12.25", features = ["json"] }
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
