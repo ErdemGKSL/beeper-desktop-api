@@ -31,9 +31,7 @@ pub(super) async fn handle_response<T: DeserializeOwned>(
             })
         }
         StatusCode::UNAUTHORIZED => {
-            Err(BeeperError::InvalidConfig(
-                "Unauthorized - check your bearer token".to_string(),
-            ))
+            Err(BeeperError::Unauthorized)
         }
         StatusCode::FORBIDDEN => {
             let error = response.json::<ApiErrorResponse>().await?;
