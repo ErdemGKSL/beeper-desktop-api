@@ -1,0 +1,28 @@
+[package]
+name = "beeper-desktop-api"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "Rust API wrapper for Beeper Desktop API"
+repository = "https://github.com/ErdemGKSL/beeper-desktop-api"
+authors = ["Erdem Göksel"]
+keywords = ["beeper", "api", "messaging", "chat", "wrapper", "client"]
+categories = ["api-bindings", "async", "authentication"]
+readme = "README.md"
+
+[lib]
+name = "beeper_desktop_api"
+path = "src/lib.rs"
+
+[[example]]
+name = "fetch_chats"
+path = "examples/fetch_chats.rs"
+
+[dependencies]
+reqwest = { version = "0.12.25", features = ["json"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "2.0.17"
+chrono = { version = "0.4", features = ["serde"] }
+urlencoding = "2.1"
