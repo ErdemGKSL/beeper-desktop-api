@@ -19,8 +19,25 @@ name = "fetch_chats"
 path = "examples/fetch_chats.rs"
 
 [[example]]
+name = "fetch_messages"
+path = "examples/fetch_messages.rs"
+
+[[example]]
+name = "fetch_accounts"
+path = "examples/fetch_accounts.rs"
+
+
+[[example]]
 name = "send_message"
 path = "examples/send_message.rs"
+
+[[example]]
+name = "search"
+path = "examples/search.rs"
+
+[[example]]
+name = "focus_app"
+path = "examples/focus_app.rs"
 
 [dependencies]
 reqwest = { version = "0.12.25", features = ["json"] }
