@@ -5,6 +5,9 @@ use thiserror::Error;
 /// Error type for Beeper API operations
 #[derive(Error, Debug)]
 pub enum BeeperError {
+    #[error("Beeper API is not reachable at {url}. Make sure Beeper Desktop is running and the API is enabled")]
+    ApiNotReachable { url: String },
+
     #[error("HTTP request failed: {0}")]
     RequestError(#[from] reqwest::Error),
 

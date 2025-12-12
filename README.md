@@ -18,7 +18,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-beeper_desktop_api = { path = "." }
+beeper_desktop_api = { version = "0.1.1" }
 tokio = { version = "1", features = ["full"] }
 ```
 

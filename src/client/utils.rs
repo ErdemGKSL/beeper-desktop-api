@@ -5,6 +5,16 @@ use serde::de::DeserializeOwned;
 use crate::error::{BeeperError, Result};
 use super::ApiErrorResponse;
 
+pub(super) fn map_request_error(error: reqwest::Error, base_url: &str) -> BeeperError {
+    if error.is_connect() {
+        BeeperError::ApiNotReachable {
+            url: base_url.to_string(),
+        }
+    } else {
+        BeeperError::RequestError(error)
+    }
+}
+
 pub(super) async fn handle_response<T: DeserializeOwned>(
     response: reqwest::Response,
 ) -> Result<T> {

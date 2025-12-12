@@ -33,7 +33,8 @@ impl BeeperClient {
             .get(&url)
             .header("Authorization", self.get_auth_header())
             .send()
-            .await?;
+            .await
+            .map_err(|e| super::utils::map_request_error(e, self.get_base_url()))?;
 
         handle_response(response).await
     }
@@ -48,7 +49,8 @@ impl BeeperClient {
             .get(&url)
             .header("Authorization", self.get_auth_header())
             .send()
-            .await?;
+            .await
+            .map_err(|e| super::utils::map_request_error(e, self.get_base_url()))?;
 
         handle_response(response).await
     }
@@ -64,7 +66,8 @@ impl BeeperClient {
             .header("Authorization", self.get_auth_header())
             .json(&input)
             .send()
-            .await?;
+            .await
+            .map_err(|e| super::utils::map_request_error(e, self.get_base_url()))?;
 
         handle_response(response).await
     }
@@ -80,7 +83,8 @@ impl BeeperClient {
             .header("Authorization", self.get_auth_header())
             .json(&body)
             .send()
-            .await?;
+            .await
+            .map_err(|e| super::utils::map_request_error(e, self.get_base_url()))?;
 
         handle_response(response).await
     }
@@ -100,7 +104,8 @@ impl BeeperClient {
             .header("Authorization", self.get_auth_header())
             .json(&body)
             .send()
-            .await?;
+            .await
+            .map_err(|e| super::utils::map_request_error(e, self.get_base_url()))?;
 
         handle_response(response).await
     }
@@ -118,7 +123,8 @@ impl BeeperClient {
             .delete(&url)
             .header("Authorization", self.get_auth_header())
             .send()
-            .await?;
+            .await
+            .map_err(|e| super::utils::map_request_error(e, self.get_base_url()))?;
 
         handle_response(response).await
     }
