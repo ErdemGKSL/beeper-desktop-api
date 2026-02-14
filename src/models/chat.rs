@@ -1,8 +1,33 @@
 //! Chat models
 
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Deserializer, Serialize};
 use super::message::Message;
 use super::user::User;
+
+fn deserialize_optional_u64_from_string_or_number<'de, D>(
+    deserializer: D,
+) -> Result<Option<u64>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    #[derive(Deserialize)]
+    #[serde(untagged)]
+    enum U64OrString {
+        U64(u64),
+        String(String),
+    }
+
+    let value = Option::<U64OrString>::deserialize(deserializer)?;
+
+    match value {
+        None => Ok(None),
+        Some(U64OrString::U64(v)) => Ok(Some(v)),
+        Some(U64OrString::String(s)) => s
+            .parse::<u64>()
+            .map(Some)
+            .map_err(serde::de::Error::custom),
+    }
+}
 
 /// Chat participants with pagination
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -46,7 +71,9 @@ pub struct Chat {
     pub unread_count: u32,
     /// Last read message sortKey
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default)]
     #[serde(rename = "lastReadMessageSortKey")]
+    #[serde(deserialize_with = "deserialize_optional_u64_from_string_or_number")]
     pub last_read_message_sort_key: Option<u64>,
     /// True if chat is archived
     #[serde(rename = "isArchived")]
@@ -144,4 +171,92 @@ pub struct SearchChatsOutput {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "newestCursor")]
     pub newest_cursor: Option<String>,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::ListChatsOutput;
+
+    fn list_chats_payload_with_sort_key(sort_key_json: &str) -> String {
+        format!(
+            r#"{{
+                "items": [
+                    {{
+                        "id": "chat-1",
+                        "accountID": "account-1",
+                        "network": "WhatsApp",
+                        "title": "Alice",
+                        "type": "single",
+                        "participants": {{
+                            "items": [],
+                            "hasMore": false,
+                            "total": 0
+                        }},
+                        "unreadCount": 0,
+                        "lastReadMessageSortKey": {sort_key_json},
+                        "isArchived": false,
+                        "isMuted": false,
+                        "isPinned": false
+                    }}
+                ],
+                "hasMore": false
+            }}"#
+        )
+    }
+
+    #[test]
+    fn list_chats_deserializes_numeric_sort_key() {
+        let payload = list_chats_payload_with_sort_key("453400065536");
+        let output: ListChatsOutput = serde_json::from_str(&payload).expect("should parse");
+        assert_eq!(output.items[0].last_read_message_sort_key, Some(453400065536));
+    }
+
+    #[test]
+    fn list_chats_deserializes_string_sort_key() {
+        let payload = list_chats_payload_with_sort_key("\"453400065536\"");
+        let output: ListChatsOutput = serde_json::from_str(&payload).expect("should parse");
+        assert_eq!(output.items[0].last_read_message_sort_key, Some(453400065536));
+    }
+
+    #[test]
+    fn list_chats_deserializes_null_sort_key() {
+        let payload = list_chats_payload_with_sort_key("null");
+        let output: ListChatsOutput = serde_json::from_str(&payload).expect("should parse");
+        assert_eq!(output.items[0].last_read_message_sort_key, None);
+    }
+
+    #[test]
+    fn list_chats_deserializes_missing_sort_key() {
+        let payload = r#"{
+            "items": [
+                {
+                    "id": "chat-1",
+                    "accountID": "account-1",
+                    "network": "WhatsApp",
+                    "title": "Alice",
+                    "type": "single",
+                    "participants": {
+                        "items": [],
+                        "hasMore": false,
+                        "total": 0
+                    },
+                    "unreadCount": 0,
+                    "isArchived": false,
+                    "isMuted": false,
+                    "isPinned": false
+                }
+            ],
+            "hasMore": false
+        }"#;
+
+        let output: ListChatsOutput = serde_json::from_str(payload).expect("should parse");
+        assert_eq!(output.items[0].last_read_message_sort_key, None);
+    }
+
+    #[test]
+    fn list_chats_rejects_invalid_sort_key_string() {
+        let payload = list_chats_payload_with_sort_key("\"not-a-number\"");
+        let result: Result<ListChatsOutput, _> = serde_json::from_str(&payload);
+        assert!(result.is_err());
+    }
 }
