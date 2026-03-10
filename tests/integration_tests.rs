@@ -186,7 +186,7 @@ fn test_chat_model_creation() {
         id: "chat-1".to_string(),
         local_chat_id: None,
         account_id: "account-1".to_string(),
-        network: "WhatsApp".to_string(),
+        network: Some("WhatsApp".to_string()),
         title: "Alice".to_string(),
         chat_type: "single".to_string(),
         participants: Participants {
@@ -214,7 +214,7 @@ fn test_group_chat_model() {
         id: "group-1".to_string(),
         local_chat_id: None,
         account_id: "account-1".to_string(),
-        network: "WhatsApp".to_string(),
+        network: Some("WhatsApp".to_string()),
         title: "Team Chat".to_string(),
         chat_type: "group".to_string(),
         participants: Participants {
