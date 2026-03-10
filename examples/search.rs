@@ -39,7 +39,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     } else {
         for (index, chat) in chats_search.items.iter().enumerate() {
             println!("  {}. {} ({})", index + 1, chat.title, chat.chat_type);
-            println!("     └─ Network: {}", chat.network);
+            println!("     └─ Network: {}", chat.network.as_deref().unwrap_or("Unknown"));
             println!("     └─ Participants: {}", chat.participants.total);
             println!("     └─ Unread: {}", chat.unread_count);
             if let Some(last_activity) = &chat.last_activity {

@@ -54,7 +54,9 @@ pub struct Chat {
     #[serde(rename = "accountID")]
     pub account_id: String,
     /// Display-only human-readable network name (e.g., 'WhatsApp', 'Messenger')
-    pub network: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(default)]
+    pub network: Option<String>,
     /// Display title of the chat
     pub title: String,
     /// Chat type: 'single' for direct messages, 'group' for group chats
